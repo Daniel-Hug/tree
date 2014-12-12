@@ -66,12 +66,17 @@ button {
 #tree li:before {
 	content: '\2022';
 	font-size: 2.4em;
-	vertical-align: middle;
+	vertical-align: top;
 	margin-right: 5px;
 	display: inline-block;
 	line-height: 22px;
 	width: 22px;
 	text-align: center;
+}
+
+#tree li > span {
+    line-height: 22px;
+    display: inline-block;
 }
 
 .add-child-btn {
@@ -92,7 +97,7 @@ button {
 	border: 0;
 	margin-right: 5px;
 	font: 0/0 a;
-	vertical-align: middle;
+	vertical-align: top;
 }
 
 .collapse-btn:before,
