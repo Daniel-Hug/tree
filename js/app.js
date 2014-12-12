@@ -9,21 +9,20 @@ function renderList(items) {
 	return DOM.buildNode({ el: 'ol', kids: items || [] });
 }
 
-function addChild(children) {
+function addChild(list, children) {
 	// setup data
-	var childrenList = this.nextElementSibling || this.parentNode.appendChild(renderList());
-	var numListItems = childrenList ? childrenList.childElementCount : 0;
-	var name = this.parentNode === document.body ? 'Root' : 'Child';
-	var text = name + ' ' + (numListItems + 1);
+	var numListItems = children.length;
+	var name = list.parentNode === document.body ? 'Root' : 'Child';
+	var text = name + ' ' + (children.length + 1);
 	var childData = { text: text };
 
 	children.push(childData);
 	updateStore();
-	childrenList.appendChild(renderTreeNode(childData));
+	list.appendChild(renderTreeNode(childData, children.length - 1, children));
 }
 
-function renderTreeNode(data) {
-	var childrenList = data.children ? [renderList(data.children.map(renderTreeNode))] : [];
+function renderTreeNode(data, i, parentArray) {
+	var childrenList = data.children ? renderList(data.children.map(renderTreeNode)) : null;
 	var hasChildren = data.children && data.children.length;
 
 	// Build li DOM & set event on
@@ -45,11 +44,22 @@ function renderTreeNode(data) {
 		} },
 		{ el: 'button', _className: 'btn add-child-btn', kid: 'Add Child', on_click: function() {
 			if (!data.children) data.children = [];
-			addChild.call(this, data.children);
+			if (!this.nextElementSibling.nextElementSibling) childrenList = li.appendChild(renderList());
+			addChild(childrenList, data.children);
 			collapseBtn.disabled = false;
 			li.classList.add('has-children');
+		} },
+		{ el: 'button', _className: 'btn remove-btn', kid: 'Delete item', on_click: function() {
+			// remove from model
+			var index = parentArray.indexOf(data);
+			parentArray.splice(index, 1);
+			updateStore();
+
+			// update view
+			if (!parentArray.length) li.parentNode.parentNode.classList.remove('has-children');
+			li.parentNode.removeChild(li);
 		} }
-	].concat(childrenList) });
+	].concat(childrenList ? [childrenList] : []) });
 
 	if (hasChildren) li.classList.add('has-children');
 	if (data.collapsed) li.classList.add('collapsed');
@@ -57,13 +67,13 @@ function renderTreeNode(data) {
 	return li;
 }
 
-roots.forEach(function(rootData) {
-	var rootEl = renderTreeNode(rootData);
+roots.forEach(function(rootData, i, array) {
+	var rootEl = renderTreeNode(rootData, i, array);
 	treeList.appendChild(rootEl);
 });
 
 on(qs('#add-root-btn'), 'click', function() {
-	addChild.call(this, roots);
+	addChild(treeList, roots);
 });
 
 /*
