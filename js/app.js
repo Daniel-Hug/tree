@@ -26,14 +26,18 @@ function renderTreeNode(data) {
 	var childrenList = data.children ? [renderList(data.children.map(renderTreeNode))] : [];
 	var hasChildren = data.children && data.children.length;
 
-	// Build li DOM & set event on 
+	// Build li DOM & set event on
 	var collapseBtn = DOM.buildNode({ el: 'button', kid: 'collapse', _disabled: !hasChildren, _className: 'collapse-btn', on_click: function() {
 		li.classList.add('collapsed');
+		data.collapsed = true;
+		updateStore();
 	} });
 	var li = DOM.buildNode({ el: 'li', kids: [
 		collapseBtn,
 		{ el: 'button', kid: 'expand', _className: 'expand-btn', on_click: function() {
 			li.classList.remove('collapsed');
+			data.collapsed = false;
+			updateStore();
 		} },
 		{ el: 'span', _contentEditable: true, kid: data.text, on_input: function() {
 			data.text = this.textContent;
@@ -48,6 +52,7 @@ function renderTreeNode(data) {
 	].concat(childrenList) });
 
 	if (hasChildren) li.classList.add('has-children');
+	if (data.collapsed) li.classList.add('collapsed');
 
 	return li;
 }
