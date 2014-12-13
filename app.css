@@ -50,6 +50,23 @@ button {
 	border-color: initial;
 }
 
+.mini-btn {
+	/* box model */
+	width: 22px;
+	height: 22px;
+	padding: 0;
+
+	/* style */
+	background: white;
+	font: 0/0 a;
+	vertical-align: top;
+}
+
+.mini-btn:before {
+	font-size: 16px;
+	vertical-align: middle;
+}
+
 
 
 /* tree styles */
@@ -64,7 +81,6 @@ button {
 }
 
 #tree li:before {
-	content: '\2022';
 	font-size: 2.4em;
 	vertical-align: top;
 	margin-right: 5px;
@@ -74,12 +90,17 @@ button {
 	text-align: center;
 }
 
+#tree li.has-children:before {
+	content: none;
+}
+
 #tree li > span {
     line-height: 22px;
     display: inline-block;
 }
 
-.add-child-btn {
+.add-child-btn,
+.remove-btn {
 	margin-left: 10px;
 }
 
@@ -90,40 +111,11 @@ button {
 .collapse-btn,
 .expand-btn {
 	display: none;
-	background: white;
-	width: 22px;
-	height: 22px;
-	padding: 0;
 	border: 0;
 	margin-right: 5px;
-	font: 0/0 a;
-	vertical-align: top;
 }
 
-.collapse-btn:before,
-.expand-btn:before {
-	font-size: 16px;
-	vertical-align: middle;
-}
-
-.collapse-btn:before {
-	content: '\25BC'; /* down-pointing triangle */
-	/*
-	content: '-';
-	*/
-
-}
-
-.expand-btn:before {
-	content: '\25B6'; /* right-pointing triangle */
-	/*
-	content: '+';
-	*/
-}
-
-
-
-/* state */
+/* expanded / collapsed state */
 
 /* if collapsed and has children, show expand button */
 .has-children.collapsed > .expand-btn,
@@ -138,6 +130,32 @@ button {
 	display: none;
 }
 
-#tree li.has-children:before {
-	content: none;
+
+
+/* icons */
+
+#tree li:before {
+	content: '\2022'; /* bullet list marker */
+}
+
+.collapse-btn:before {
+	content: '\25BC'; /* down-pointing triangle */
+	/*
+	content: '-';
+	*/
+}
+
+.expand-btn:before {
+	content: '\25B6'; /* right-pointing triangle */
+	/*
+	content: '+';
+	*/
+}
+
+.add-child-btn:before {
+	content: '+';
+}
+
+.remove-btn:before {
+	content: '\00D7'; /* multiplication sign */
 }

@@ -1,3 +1,16 @@
+/* roots data structure:
+[
+	{
+		text: 'root 1',
+		children: [{
+			text: 'child 1 of root 1'
+		}]
+	}, {
+		text: 'root 2'
+	}
+]
+*/
+
 var roots = storage.get('tree_roots') || [];
 var treeList = qs('#tree');
 
@@ -26,14 +39,14 @@ function renderTreeNode(data, i, parentArray) {
 	var hasChildren = data.children && data.children.length;
 
 	// Build li DOM & set event on
-	var collapseBtn = DOM.buildNode({ el: 'button', kid: 'collapse', _disabled: !hasChildren, _className: 'collapse-btn', on_click: function() {
+	var collapseBtn = DOM.buildNode({ el: 'button', _disabled: !hasChildren, _className: 'mini-btn collapse-btn', kid: 'collapse', on_click: function() {
 		li.classList.add('collapsed');
 		data.collapsed = true;
 		updateStore();
 	} });
 	var li = DOM.buildNode({ el: 'li', kids: [
 		collapseBtn,
-		{ el: 'button', kid: 'expand', _className: 'expand-btn', on_click: function() {
+		{ el: 'button', kid: 'expand', _className: 'mini-btn expand-btn', on_click: function() {
 			li.classList.remove('collapsed');
 			data.collapsed = false;
 			updateStore();
@@ -42,14 +55,14 @@ function renderTreeNode(data, i, parentArray) {
 			data.text = this.textContent;
 			updateStore();
 		} },
-		{ el: 'button', _className: 'btn add-child-btn', kid: 'Add Child', on_click: function() {
+		{ el: 'button', _className: 'btn mini-btn add-child-btn', kid: 'Add child', on_click: function() {
 			if (!data.children) data.children = [];
 			if (!this.nextElementSibling.nextElementSibling) childrenList = li.appendChild(renderList());
 			addChild(childrenList, data.children);
 			collapseBtn.disabled = false;
 			li.classList.add('has-children');
 		} },
-		{ el: 'button', _className: 'btn remove-btn', kid: 'Delete item', on_click: function() {
+		{ el: 'button', _className: 'btn mini-btn remove-btn', kid: 'Delete item', on_click: function() {
 			// remove from model
 			var index = parentArray.indexOf(data);
 			parentArray.splice(index, 1);
@@ -75,23 +88,3 @@ roots.forEach(function(rootData, i, array) {
 on(qs('#add-root-btn'), 'click', function() {
 	addChild(treeList, roots);
 });
-
-/*
-{
-	'root 1': {
-		'child 1 of root 1': {}
-	},
-	'root 2': {}
-}
-
-[
-	{
-		text: 'root 1',
-		children: [{
-			text: 'child 1 of root 1'
-		}]
-	}, {
-		text: 'root 2'
-	}
-]
-*/
