@@ -39,10 +39,10 @@ function renderTreeNode(data, i, parentArray) {
 	var childrenList = data.children ? renderList(data.children.map(renderTreeNode)) : null;
 	var hasChildren = data.children && data.children.length;
 
-	// Build li DOM & set event on
+	// Build li DOM & set up events
 	var li = DOM.buildNode({ el: 'li', kids: [
 		{ el: 'button', _className: 'mini-btn collapse-btn', kid: 'collapse', on_click: collapse },
-		{ el: 'button', kid: 'expand', _className: 'mini-btn expand-btn', on_click: expand },
+		{ el: 'button', _className: 'mini-btn expand-btn', kid: 'expand', on_click: expand },
 		{ el: 'span', _contentEditable: true, kid: data.text, on_input: textEdit },
 		{ el: 'button', _className: 'btn mini-btn add-child-btn', kid: 'Add child', on_click: addClick },
 		{ el: 'button', _className: 'btn mini-btn remove-btn', kid: 'Delete item', on_click: removeClick }
