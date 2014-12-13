@@ -34,48 +34,58 @@ function addChild(list, children) {
 	list.appendChild(renderTreeNode(childData, children.length - 1, children));
 }
 
+
 function renderTreeNode(data, i, parentArray) {
 	var childrenList = data.children ? renderList(data.children.map(renderTreeNode)) : null;
 	var hasChildren = data.children && data.children.length;
 
 	// Build li DOM & set event on
-	var collapseBtn = DOM.buildNode({ el: 'button', _disabled: !hasChildren, _className: 'mini-btn collapse-btn', kid: 'collapse', on_click: function() {
-		li.classList.add('collapsed');
-		data.collapsed = true;
-		updateStore();
-	} });
 	var li = DOM.buildNode({ el: 'li', kids: [
-		collapseBtn,
-		{ el: 'button', kid: 'expand', _className: 'mini-btn expand-btn', on_click: function() {
-			li.classList.remove('collapsed');
-			data.collapsed = false;
-			updateStore();
-		} },
-		{ el: 'span', _contentEditable: true, kid: data.text, on_input: function() {
-			data.text = this.textContent;
-			updateStore();
-		} },
-		{ el: 'button', _className: 'btn mini-btn add-child-btn', kid: 'Add child', on_click: function() {
-			if (!data.children) data.children = [];
-			if (!this.nextElementSibling.nextElementSibling) childrenList = li.appendChild(renderList());
-			addChild(childrenList, data.children);
-			collapseBtn.disabled = false;
-			li.classList.add('has-children');
-		} },
-		{ el: 'button', _className: 'btn mini-btn remove-btn', kid: 'Delete item', on_click: function() {
-			// remove from model
-			var index = parentArray.indexOf(data);
-			parentArray.splice(index, 1);
-			updateStore();
-
-			// update view
-			if (!parentArray.length) li.parentNode.parentNode.classList.remove('has-children');
-			li.parentNode.removeChild(li);
-		} }
+		{ el: 'button', _className: 'mini-btn collapse-btn', kid: 'collapse', on_click: collapse },
+		{ el: 'button', kid: 'expand', _className: 'mini-btn expand-btn', on_click: expand },
+		{ el: 'span', _contentEditable: true, kid: data.text, on_input: textEdit },
+		{ el: 'button', _className: 'btn mini-btn add-child-btn', kid: 'Add child', on_click: addClick },
+		{ el: 'button', _className: 'btn mini-btn remove-btn', kid: 'Delete item', on_click: removeClick }
 	].concat(childrenList ? [childrenList] : []) });
 
 	if (hasChildren) li.classList.add('has-children');
 	if (data.collapsed) li.classList.add('collapsed');
+
+	// event handlers
+	function collapse() {
+		li.classList.add('collapsed');
+		data.collapsed = true;
+		updateStore();
+	}
+
+	function expand() {
+		li.classList.remove('collapsed');
+		data.collapsed = false;
+		updateStore();
+	}
+
+	function textEdit() {
+		data.text = this.textContent;
+		updateStore();
+	}
+
+	function addClick() {
+		if (!data.children) data.children = [];
+		if (!this.nextElementSibling.nextElementSibling) childrenList = li.appendChild(renderList());
+		addChild(childrenList, data.children);
+		li.classList.add('has-children');
+	}
+
+	function removeClick() {
+		// remove from model
+		var index = parentArray.indexOf(data);
+		parentArray.splice(index, 1);
+		updateStore();
+
+		// update view
+		if (!parentArray.length) li.parentNode.parentNode.classList.remove('has-children');
+		li.parentNode.removeChild(li);
+	}
 
 	return li;
 }
