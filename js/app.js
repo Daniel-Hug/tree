@@ -14,6 +14,7 @@ featureFlags.forEach(function(name) {
 
 var roots = storage.get('tree_roots') || [];
 var treeList = qs('#tree');
+var dragList = new DragList({});
 
 function updateStore() {
 	storage.set('tree_roots', roots);
@@ -39,7 +40,7 @@ function addChild(list, children) {
 	list.appendChild(li);
 
 	// select item title
-	var titleEl = getMatching(li.children, '.item-title');
+	var titleEl = getMatching(li.children, '.title');
 	selectContents(titleEl);
 }
 
@@ -52,9 +53,8 @@ function renderTreeNode(data, i, parentArray) {
 	var li = DOM.buildNode({ el: 'li', kids: [
 		{ el: 'button', _className: 'mini-btn collapse-btn', kid: 'collapse', on_click: collapse },
 		{ el: 'button', _className: 'mini-btn expand-btn', kid: 'expand', on_click: expand },
-		{ _className: 'title-wrap', kid:
-			{ el: 'span', _className: 'title', _contentEditable: true, kid: data.text, on_input: textEdit },
-		},
+		{ _className: 'dl-handle' },
+		{ el: 'span', _className: 'title', _contentEditable: true, kid: data.text, on_input: textEdit },
 		{ el: 'button', _className: 'btn mini-btn add-child-btn', kid: 'Add child', on_click: addClick },
 		{ el: 'button', _className: 'btn mini-btn remove-btn', kid: 'Delete item', on_click: removeClick }
 	].concat(childrenList ? [childrenList] : []) });
@@ -97,6 +97,8 @@ function renderTreeNode(data, i, parentArray) {
 		if (!parentArray.length) li.parentNode.parentNode.classList.remove('has-children');
 		li.parentNode.removeChild(li);
 	}
+
+	dragList.addItem(li);
 
 	return li;
 }
