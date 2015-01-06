@@ -43,7 +43,9 @@ function renderTreeNode(data, i, parentArray) {
 	var li = DOM.buildNode({ el: 'li', kids: [
 		{ el: 'button', _className: 'mini-btn collapse-btn', kid: 'collapse', on_click: collapse },
 		{ el: 'button', _className: 'mini-btn expand-btn', kid: 'expand', on_click: expand },
-		{ el: 'span', _contentEditable: true, kid: data.text, on_input: textEdit },
+		{ _className: 'title-wrap', kid:
+			{ el: 'span', _className: 'title', _contentEditable: true, kid: data.text, on_input: textEdit },
+		},
 		{ el: 'button', _className: 'btn mini-btn add-child-btn', kid: 'Add child', on_click: addClick },
 		{ el: 'button', _className: 'btn mini-btn remove-btn', kid: 'Delete item', on_click: removeClick }
 	].concat(childrenList ? [childrenList] : []) });
