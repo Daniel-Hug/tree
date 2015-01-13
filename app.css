@@ -128,6 +128,7 @@ button {
 	display: none;
 	border: 0;
 	margin-right: 5px;
+	position: relative; /* must be on top of overlapping title padding */
 }
 
 /* expanded / collapsed state */
