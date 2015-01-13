@@ -53,6 +53,7 @@ window.DragList = (function() {
 		this.itemEls.push(itemEl);
 		itemEl.draggable = true;
 		itemEl.classList.add('dl-item');
+		var handle = itemEl.querySelector(this.handleSelector);
 
 		// cache this DragList instance for use in handlers
 		var thisDragList = this;
@@ -90,7 +91,6 @@ window.DragList = (function() {
 		this.curSrcEl = null;
 		on(itemEl, 'dragstart', function(e) {
 			// if handle exists don't do anything if it wasn't last clicked
-			var handle = this.querySelector(thisDragList.handleSelector);
 			if (handle && handle !== clickedEl && !handle.contains(clickedEl)) {
 				e.preventDefault();
 				return;
@@ -100,32 +100,39 @@ window.DragList = (function() {
 			thisDragList.curSrcEl = this;
 			if (thisDragList.action === 'switch')
 				this.classList.add(MOVING_CLASS);
+			else {
+				// replace element being dragged with dropAreaEl (must be async)
+				setTimeout(function() {
+					itemEl.parentNode.replaceChild(thisDragList.dropAreaEl, itemEl);
+				}, 0);
+			}
 		});
 
-		on(itemEl, 'dragover', thisDragList.action === 'switch' ? function(e) {
+		on(itemEl, 'dragover', this.action === 'switch' ? function(e) {
+			// make sure item we're dragging is from this list
+			if (!thisDragList.curSrcEl) return;
+
+			// allow drop
 			e.preventDefault();
+
 			e.dataTransfer.dropEffect = 'move';
 			this.classList.add(OVER_CLASS);
-		} : function(e) {
+		} : function() {
+			// make sure item we're dragging is from this list
+			if (!thisDragList.curSrcEl) return;
+
 			var dropAreaEl = thisDragList.dropAreaEl;
 			var parent = this.parentNode;
 
-			if (this === thisDragList.curSrcEl) {
-				// replace element being dragged with dropAreaEl
-				parent.replaceChild(dropAreaEl, this);
-			} else {
-				// move dropAreaEl
-				var targetI = [].indexOf.call(parent.children, this);
-				var visibleItemEls = arrayExcept(parent.children, dropAreaEl);
-				var nextSib = visibleItemEls[targetI];
-				if (nextSib && nextSib.previousElementSibling === dropAreaEl) return;
-				parent.insertBefore(dropAreaEl, nextSib);
-			}
+			// move dropAreaEl
+			var targetI = [].indexOf.call(parent.children, this);
+			var visibleItemEls = arrayExcept(parent.children, dropAreaEl);
+			parent.insertBefore(dropAreaEl, visibleItemEls[targetI]);
 		});
 
 		if (this.action === 'switch') {
 			// this also fires when a child node is dragged over
-			on(itemEl, 'dragleave', function(e) {
+			on(itemEl, 'dragleave', function() {
 				this.classList.remove(OVER_CLASS);
 			});
 
@@ -139,7 +146,7 @@ window.DragList = (function() {
 
 				// ondrop callback
 				if (thisDragList.ondrop)
-					thisDragList.ondrop.call(thisDragList, thisDragList.curSrcEl);
+					thisDragList.ondrop.call(thisDragList, thisDragList.curSrcEl, this);
 			});
 		}
 
