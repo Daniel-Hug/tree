@@ -1,11 +1,11 @@
 {
   "name": "html5-dnd-list",
   "homepage": "https://github.com/Daniel-Hug/html5-dnd-list",
-  "_release": "7f9098582d",
+  "_release": "4ca6754c15",
   "_resolution": {
     "type": "branch",
     "branch": "gh-pages",
-    "commit": "7f9098582dae4a3f565ef56bdf44d2fde13f46c2"
+    "commit": "4ca6754c15f39baa5af8f8daa982efc7f1f139de"
   },
   "_source": "git://github.com/Daniel-Hug/html5-dnd-list.git",
   "_target": "gh-pages",
