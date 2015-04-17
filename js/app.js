@@ -1,15 +1,16 @@
-/* roots data structure:
-[
-	{
-		text: 'root 1',
-		children: [{
-			text: 'child 1 of root 1'
-		}]
-	}, {
-		text: 'root 2'
-	}
-]
-*/
+
+// feature flags
+
+var featureFlags = queryObj().ff;
+featureFlags = featureFlags ? featureFlags.split(',') : [];
+
+var ff = {};
+featureFlags.forEach(function(name) {
+	ff[name] = true;
+	document.documentElement.classList.add('ff-' + name);
+});
+
+
 
 var roots = storage.get('tree_roots') || [];
 var treeList = qs('#tree');

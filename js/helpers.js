@@ -65,3 +65,18 @@ function objMatches(obj, queryObj) {
 	}
 	return true;
 }
+
+
+function queryObj() {
+	var obj = {}, keyValuePairs = decodeURIComponent(location.search).slice(1).split('&');
+
+	keyValuePairs.forEach(function(keyValuePair) {
+		keyValuePair = keyValuePair.split('=');
+		obj[keyValuePair[0]] = keyValuePair[1] || '';
+	});
+
+	return obj;
+}
+
+// Use:
+// queryObj()['search'] //--> 'pictures of cats'
