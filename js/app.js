@@ -12,36 +12,8 @@ featureFlags.forEach(function(name) {
 
 
 
-function atPos(arr, pos, cb) {
-	var depth = pos.length;
-	for (var i = 1; i < depth; i++) {
-		arr = arr[pos[i]].children;
-	}
-	cb(arr, pos[i]);
-}
-
 var roots = storage.get('tree_roots') || [];
 var treeList = qs('#tree');
-var dragList = new DragList({
-	ondrop: function(li, oldParentList, oldI) {
-		// remove object from current place in roots
-		if (oldParentList === tree) {
-			roots.splice(oldI, 1);
-		} else {
-			var oldPos = getElPos(treeList, oldParentList.parentNode).concat[oldI];
-			atPos(roots, oldPos, function(arr, i) {
-				arr.splice(i, 1);
-			});
-		}
-
-		// move object to new place in roots
-		var newPos = getElPos(treeList, li);
-		atPos(roots, newPos, function(arr, i) {
-			arrInsert(arr, elAndObjMap[li.id], i);
-		});
-		//updateStore();
-	}
-});
 
 function updateStore() {
 	storage.set('tree_roots', roots);
@@ -130,8 +102,6 @@ function renderTreeNode(data, i, parentArray) {
 		if (!parentArray.length) li.parentNode.parentNode.classList.remove('has-children');
 		li.parentNode.removeChild(li);
 	}
-
-	dragList.addItem(li);
 
 	return li;
 }
