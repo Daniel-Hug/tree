@@ -15,6 +15,11 @@ featureFlags.forEach(function(name) {
 var roots = storage.get('tree_roots') || [];
 var treeList = qs('#tree');
 
+$(treeList).sortable({
+	group: 'tree',
+	handle: '.dl-handle'
+});
+
 function updateStore() {
 	storage.set('tree_roots', roots);
 }
