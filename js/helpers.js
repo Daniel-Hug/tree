@@ -59,6 +59,10 @@ var storage = {
 };
 
 
+function uid() {
+	return (+(Math.random() + '00').slice(2)).toString(36);
+}
+
 function objMatches(obj, queryObj) {
 	for (var key in queryObj) {
 		if (queryObj[key] !== obj[key]) return false;
