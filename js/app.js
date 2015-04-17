@@ -68,7 +68,7 @@ function addChild(list, children) {
 	list.appendChild(li);
 
 	// select item title
-	var titleEl = getMatching(li.children, '.title');
+	var titleEl = getMatching(li.children, '.title-wrap').firstChild;
 	selectContents(titleEl);
 }
 
@@ -85,7 +85,9 @@ function renderTreeNode(data, i, parentArray) {
 		{ el: 'button', _className: 'mini-btn collapse-btn', kid: 'collapse', on_click: collapse },
 		{ el: 'button', _className: 'mini-btn expand-btn', kid: 'expand', on_click: expand },
 		{ _className: 'dl-handle' },
-		{ el: 'span', _className: 'item-title', _contentEditable: true, kid: data.text, on_input: textEdit },
+		{ _className: 'title-wrap', kid:
+			{ el: 'span', _className: 'title', _contentEditable: true, kid: data.text, on_input: textEdit },
+		},
 		{ el: 'button', _className: 'btn mini-btn add-child-btn', kid: 'Add child', on_click: addClick },
 		{ el: 'button', _className: 'btn mini-btn remove-btn', kid: 'Delete item', on_click: removeClick }
 	].concat(childrenList ? [childrenList] : []) });
