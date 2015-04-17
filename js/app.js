@@ -12,9 +12,36 @@ featureFlags.forEach(function(name) {
 
 
 
+function atPos(arr, pos, cb) {
+	var depth = pos.length;
+	for (var i = 1; i < depth; i++) {
+		arr = arr[pos[i]].children;
+	}
+	cb(arr, pos[i]);
+}
+
 var roots = storage.get('tree_roots') || [];
 var treeList = qs('#tree');
-var dragList = new DragList({});
+var dragList = new DragList({
+	ondrop: function(li, oldParentList, oldI) {
+		// remove object from current place in roots
+		if (oldParentList === tree) {
+			roots.splice(oldI, 1);
+		} else {
+			var oldPos = getElPos(treeList, oldParentList.parentNode).concat[oldI];
+			atPos(roots, oldPos, function(arr, i) {
+				arr.splice(i, 1);
+			});
+		}
+
+		// move object to new place in roots
+		var newPos = getElPos(treeList, li);
+		atPos(roots, newPos, function(arr, i) {
+			arrInsert(arr, elAndObjMap[li.id], i);
+		});
+		//updateStore();
+	}
+});
 
 function updateStore() {
 	storage.set('tree_roots', roots);
@@ -24,6 +51,7 @@ function renderList(items) {
 	return DOM.buildNode({ el: 'ol', kids: items || [] });
 }
 
+var elAndObjMap = {};
 function addChild(list, children) {
 	// setup data
 	var numListItems = children.length;
@@ -49,12 +77,15 @@ function renderTreeNode(data, i, parentArray) {
 	var childrenList = data.children ? renderList(data.children.map(renderTreeNode)) : null;
 	var hasChildren = data.children && data.children.length;
 
+	var id = uid();
+	elAndObjMap[id] = data;
+
 	// Build li DOM & set up events
-	var li = DOM.buildNode({ el: 'li', kids: [
+	var li = DOM.buildNode({ el: 'li', id: id, kids: [
 		{ el: 'button', _className: 'mini-btn collapse-btn', kid: 'collapse', on_click: collapse },
 		{ el: 'button', _className: 'mini-btn expand-btn', kid: 'expand', on_click: expand },
 		{ _className: 'dl-handle' },
-		{ el: 'span', _className: 'title', _contentEditable: true, kid: data.text, on_input: textEdit },
+		{ el: 'span', _className: 'item-title', _contentEditable: true, kid: data.text, on_input: textEdit },
 		{ el: 'button', _className: 'btn mini-btn add-child-btn', kid: 'Add child', on_click: addClick },
 		{ el: 'button', _className: 'btn mini-btn remove-btn', kid: 'Delete item', on_click: removeClick }
 	].concat(childrenList ? [childrenList] : []) });
