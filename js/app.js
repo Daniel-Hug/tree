@@ -29,9 +29,17 @@ function addChild(list, children) {
 	var text = name + ' ' + (children.length + 1);
 	var childData = { text: text };
 
+	// update model
 	children.push(childData);
 	updateStore();
-	list.appendChild(renderTreeNode(childData, children.length - 1, children));
+
+	// create and append li
+	var li = renderTreeNode(childData, children.length - 1, children);
+	list.appendChild(li);
+
+	// select item title
+	var titleEl = getMatching(li.children, '.item-title');
+	selectContents(titleEl);
 }
 
 
