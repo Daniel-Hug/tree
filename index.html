@@ -11,6 +11,18 @@
 		<ol id="tree"></ol>
 
 		<!-- JS -->
+
+		<!-- polyfills -->
+		<script>
+		function loadPoly(name, condition) {
+			if (!condition)
+				document.write('<' + 'script src="js/polyfills/' + name + '.js"><' + '/script>');
+		}
+
+		loadPoly('classList', 'classList' in document.body);
+		loadPoly('matches', 'matches' in document.documentElement);
+		</script>
+
 		<script src="bower_components/DOM-Builder/DOM-Builder.js"></script>
 		<script src="bower_components/html5-dnd-list/all/draglist.js"></script>
 		<script src="js/helpers.js"></script>
