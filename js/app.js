@@ -24,11 +24,6 @@ function updateStore() {
 	storage.set('tree_roots', roots);
 }
 
-function renderList(items) {
-	return DOM.buildNode({ el: 'ol', kids: items || [] });
-}
-
-var elAndObjMap = {};
 function addChild(list, children) {
 	// setup data
 	var numListItems = children.length;
@@ -51,14 +46,8 @@ function addChild(list, children) {
 
 
 function renderTreeNode(data, i, parentArray) {
-	var childrenList = data.children ? renderList(data.children.map(renderTreeNode)) : null;
-	var hasChildren = data.children && data.children.length;
-
-	var id = uid();
-	elAndObjMap[id] = data;
-
 	// Build li DOM & set up events
-	var li = DOM.buildNode({ el: 'li', id: id, kids: [
+	var li = DOM.buildNode({ el: 'li', kids: [
 		{ el: 'button', _className: 'mini-btn collapse-btn', kid: 'collapse', on_click: collapse },
 		{ el: 'button', _className: 'mini-btn expand-btn', kid: 'expand', on_click: expand },
 		{ _className: 'dl-handle' },
@@ -66,10 +55,11 @@ function renderTreeNode(data, i, parentArray) {
 			{ el: 'span', _className: 'title', _contentEditable: true, kid: data.text, on_input: textEdit },
 		},
 		{ el: 'button', _className: 'btn mini-btn add-child-btn', kid: 'Add child', on_click: addClick },
-		{ el: 'button', _className: 'btn mini-btn remove-btn', kid: 'Delete item', on_click: removeClick }
-	].concat(childrenList ? [childrenList] : []) });
+		{ el: 'button', _className: 'btn mini-btn remove-btn', kid: 'Delete item', on_click: removeClick },
+		{ el: 'ol', kids: (data.children || []).map(renderTreeNode) }
+	]});
 
-	if (hasChildren) li.classList.add('has-children');
+	if (data.children && data.children.length) li.classList.add('has-children');
 	if (data.collapsed) li.classList.add('collapsed');
 
 	// event handlers
