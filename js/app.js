@@ -17,7 +17,7 @@ var treeList = qs('#tree');
 
 $(treeList).sortable({
 	group: 'tree',
-	handle: '.dl-handle'
+	handle: '.handle'
 });
 
 function updateStore() {
@@ -50,7 +50,7 @@ function renderTreeNode(data, i, parentArray) {
 	var li = DOM.buildNode({ el: 'li', kids: [
 		{ el: 'button', _className: 'mini-btn collapse-btn', kid: 'collapse', on_click: collapse },
 		{ el: 'button', _className: 'mini-btn expand-btn', kid: 'expand', on_click: expand },
-		{ _className: 'dl-handle' },
+		{ _className: 'handle' },
 		{ _className: 'title-wrap', kid:
 			{ el: 'span', _className: 'title', _contentEditable: true, kid: data.text, on_input: textEdit },
 		},

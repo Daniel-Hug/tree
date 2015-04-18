@@ -122,7 +122,7 @@ button {
 
 
 /* handle */
-#tree .dl-handle {
+#tree .handle {
 	display: inline-block;
 	vertical-align: top;
 	width: 11px;
@@ -139,7 +139,7 @@ button {
 	cursor: grab;
 }
 
-#tree .dl-handle:hover {
+#tree .handle:hover {
 	background-color: #444;
 }
 
