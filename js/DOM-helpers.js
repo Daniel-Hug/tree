@@ -17,6 +17,14 @@ function selectContents(el) {
 	sel.addRange(range);
 }
 
+function renderMultiple(parent, array, renderer) {
+	var renderedEls = array.map(renderer);
+	var docFrag = document.createDocumentFragment();
+	for (var i = 0, l = renderedEls.length; i < l; i++) docFrag.appendChild(renderedEls[i]);
+	parent.appendChild(docFrag);
+	return renderedEls;
+}
+
 
 
 

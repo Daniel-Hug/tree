@@ -1,29 +1,9 @@
-
-// feature flags
-
-var featureFlags = queryObj().ff;
-featureFlags = featureFlags ? featureFlags.split(',') : [];
-
-var ff = {};
-featureFlags.forEach(function(name) {
-	ff[name] = true;
-	document.documentElement.classList.add('ff-' + name);
-});
-
-
-
-var roots = storage.get('tree_roots') || [];
-var treeList = qs('#tree');
-
-$(treeList).sortable({
-	group: 'tree',
-	handle: '.handle'
-});
-
 function updateStore() {
 	storage.set('tree_roots', roots);
 }
 
+// Accepts a list element (ul or ol)
+// and a list of objects for the existing children
 function addChild(list, children) {
 	// setup data
 	var numListItems = children.length;
@@ -47,6 +27,7 @@ function addChild(list, children) {
 
 function renderTreeNode(data, i, parentArray) {
 	// Build li DOM & set up events
+	var childList = DOM.buildNode({ el: 'ol', kids: (data.children || []).map(renderTreeNode) });
 	var li = DOM.buildNode({ el: 'li', kids: [
 		{ el: 'button', _className: 'mini-btn collapse-btn', kid: 'collapse', on_click: collapse },
 		{ el: 'button', _className: 'mini-btn expand-btn', kid: 'expand', on_click: expand },
@@ -56,7 +37,7 @@ function renderTreeNode(data, i, parentArray) {
 		},
 		{ el: 'button', _className: 'btn mini-btn add-child-btn', kid: 'Add child', on_click: addClick },
 		{ el: 'button', _className: 'btn mini-btn remove-btn', kid: 'Delete item', on_click: removeClick },
-		{ el: 'ol', kids: (data.children || []).map(renderTreeNode) }
+		childList
 	]});
 
 	if (data.children && data.children.length) li.classList.add('has-children');
@@ -82,8 +63,7 @@ function renderTreeNode(data, i, parentArray) {
 
 	function addClick() {
 		if (!data.children) data.children = [];
-		if (!this.nextElementSibling.nextElementSibling) childrenList = li.appendChild(renderList());
-		addChild(childrenList, data.children);
+		addChild(childList, data.children);
 		li.classList.add('has-children');
 	}
 
@@ -100,12 +80,3 @@ function renderTreeNode(data, i, parentArray) {
 
 	return li;
 }
-
-roots.forEach(function(rootData, i, array) {
-	var rootEl = renderTreeNode(rootData, i, array);
-	treeList.appendChild(rootEl);
-});
-
-on(qs('#add-root-btn'), 'click', function() {
-	addChild(treeList, roots);
-});

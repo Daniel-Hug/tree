@@ -82,8 +82,16 @@ button {
 }
 
 #tree li {
-	margin: 5px 0;
+	margin: 8px 0;
+	border: 1px solid #CCC;
+	padding: 8px;
+	display: block;
 	list-style: none;
+	background: #eee;
+}
+
+#tree li:last-child {
+	margin-bottom: 0;
 }
 
 #tree li:before {
@@ -94,6 +102,13 @@ button {
 	line-height: 22px;
 	width: 22px;
 	text-align: center;
+}
+
+#tree li.placeholder {
+	position: relative;
+	margin: 0;
+	padding: 0;
+	border: none;
 }
 
 #tree li.has-children:before {
