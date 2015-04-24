@@ -4,19 +4,13 @@ function updateStore() {
 
 // Accepts a list element (ul or ol)
 // and a list of objects for the existing children
-function addChild(list, children) {
-	// setup data
-	var numListItems = children.length;
-	var name = list.parentNode === document.body ? 'Root' : 'Child';
-	var text = name + ' ' + (children.length + 1);
-	var childData = { text: text };
-
+function addChild(list, children, newChildData) {
 	// update model
-	children.push(childData);
+	children.push(newChildData);
 	updateStore();
 
 	// create and append li
-	var li = renderTreeNode(childData, children.length - 1, children);
+	var li = renderTreeNode(newChildData, children.length - 1, children);
 	list.appendChild(li);
 
 	// select item title
@@ -63,14 +57,14 @@ function renderTreeNode(data, i, parentArray) {
 
 	function addClick() {
 		if (!data.children) data.children = [];
-		addChild(childList, data.children);
+		var newChildData = { text: 'Child ' + (data.children.length + 1) };
+		addChild(childList, data.children, newChildData);
 		li.classList.add('has-children');
 	}
 
 	function removeClick() {
 		// remove from model
-		var index = parentArray.indexOf(data);
-		parentArray.splice(index, 1);
+		arrRemove(parentArray, data);
 		updateStore();
 
 		// update view

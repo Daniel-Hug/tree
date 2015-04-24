@@ -28,5 +28,6 @@ $(treeList).sortable({
 
 // Make the "add root" button work
 on(qs('#add-root-btn'), 'click', function() {
-	addChild(treeList, roots);
+	var newRootData = { text: 'Root ' + (roots.length + 1) };
+	addChild(treeList, roots, newRootData);
 });

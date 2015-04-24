@@ -38,6 +38,11 @@ function arrInsert(arr, item, i) {
 	arr.splice(i, 0, item);
 }
 
+function arrRemove(arr, item) {
+	var i = arr.indexOf(item);
+	arr.splice(i, 1);
+}
+
 
 // localStorage wrapper:
 var storage = {
